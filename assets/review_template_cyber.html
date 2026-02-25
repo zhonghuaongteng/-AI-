@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学术论文审阅报告 - Academic Review Protocol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Cyber Academic Palette */
+            --bg-deep: #0a0e17;
+            --bg-card: #111827;
+            --bg-elevated: #1a2332;
+            --border-dim: #1e293b;
+            --border-mid: #374151;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* Accent Colors - Neon Scientific */
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff00ff;
+            --accent-amber: #ffaa00;
+            --accent-emerald: #00ff9f;
+            --accent-rose: #ff3366;
+
+            /* Severity Colors */
+            --severity-critical: linear-gradient(135deg, #ff3366, #ff00ff);
+            --severity-major: linear-gradient(135deg, #ff6b35, #ffaa00);
+            --severity-moderate: linear-gradient(135deg, #ffaa00, #ffdd00);
+            --severity-minor: linear-gradient(135deg, #00d4ff, #00ff9f);
+            --severity-trivial: linear-gradient(135deg, #64748b, #94a3b8);
+
+            /* Category Colors */
+            --cat-format: #00d4ff;
+            --cat-expression: #ff00ff;
+            --cat-logic: #ffaa00;
+            --cat-ai: #ff3366;
+            --cat-major: #00ff9f;
+
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+
+            /* Typography */
+            --font-display: 'Syncopate', sans-serif;
+            --font-body: 'Crimson Pro', Georgia, serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 16px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glowing Orb Effects */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-cyan);
+            top: -100px;
+            right: -100px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-magenta);
+            bottom: -50px;
+            left: -50px;
+            animation: float 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(30px, -30px); }
+            50% { transform: translate(-20px, 20px); }
+            75% { transform: translate(20px, 30px); }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            padding: var(--space-2xl) 0;
+            border-bottom: 1px solid var(--border-mid);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-lg);
+        }
+
+        .document-type {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin-bottom: var(--space-sm);
+        }
+
+        .header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: var(--space-xl);
+            flex-wrap: wrap;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .meta-item::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+        }
+
+        .round-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-elevated);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+        }
+
+        .round-badge .number {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Stats Dashboard */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .stat-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: var(--space-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-cyan);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-mid);
+            transform: translateY(-2px);
+        }
+
+        .stat-card.format { --accent: var(--cat-format); }
+        .stat-card.expression { --accent: var(--cat-expression); }
+        .stat-card.logic { --accent: var(--cat-logic); }
+        .stat-card.ai { --accent: var(--cat-ai); }
+        .stat-card.major { --accent: var(--cat-major); }
+
+        .stat-card::before {
+            background: var(--accent);
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: var(--space-sm);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .stat-card.format .stat-number { color: var(--cat-format); }
+        .stat-card.expression .stat-number { color: var(--cat-expression); }
+        .stat-card.logic .stat-number { color: var(--cat-logic); }
+        .stat-card.ai .stat-number { color: var(--cat-ai); }
+        .stat-card.major .stat-number { color: var(--cat-major); }
+
+        /* Progress Ring */
+        .progress-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            padding: var(--space-lg) var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .progress-info h2 {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: var(--space-xs);
+        }
+
+        .progress-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .progress-bar {
+            flex: 1;
+            max-width: 400px;
+            height: 4px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0 var(--space-xl);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-percent {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--accent-cyan);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) 0;
+            margin-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--border-dim);
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: var(--space-xs);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: var(--space-sm) var(--space-md);
+            background: transparent;
+            border: 1px solid var(--border-dim);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-cyan);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            color: var(--bg-deep);
+        }
+
+        .filter-btn .count {
+            opacity: 0.6;
+            font-size: 10px;
+            margin-left: var(--space-xs);
+        }
+
+        /* Search */
+        .search-container {
+            margin-left: auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 200px;
+            padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-lg);
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            width: 280px;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--space-sm);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Section */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            margin-bottom: var(--space-xl);
+            position: relative;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            padding: var(--space-lg) var(--space-xl);
+            border-bottom: 1px solid var(--border-dim);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 1px;
+            background: var(--accent-cyan);
+        }
+
+        .section-icon {
+            font-size: 24px;
+            margin-right: var(--space-md);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            flex: 1;
+        }
+
+        .section-count {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+            padding: var(--space-xs) var(--space-sm);
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 2px;
+        }
+
+        /* Table */
+        .review-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .review-table thead {
+            background: var(--bg-elevated);
+        }
+
+        .review-table th {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: var(--space-md) var(--space-lg);
+            text-align: left;
+            font-weight: 400;
+        }
+
+        .review-table td {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-dim);
+            vertical-align: top;
+        }
+
+        .review-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .review-table tbody tr:hover {
+            background: var(--bg-elevated);
+        }
+
+        .review-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Location Badge */
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            max-width: 200px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .location-text {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+            background: var(--bg-elevated);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 2px;
+            border: 1px solid var(--border-dim);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .location-badge:hover .location-text {
+            border-color: var(--accent-cyan);
+            color: var(--text-primary);
+        }
+
+        .copy-icon {
+            font-size: 10px;
+            margin-left: var(--space-xs);
+            opacity: 0.5;
+            transition: opacity 0.2s ease;
+        }
+
+        .location-badge:hover .copy-icon {
+            opacity: 1;
+        }
+
+        /* Issue Type Badge */
+        .issue-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .issue-badge.format {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--cat-format);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .issue-badge.expression {
+            background: rgba(255, 0, 255, 0.15);
+            color: var(--cat-expression);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+
+        .issue-badge.logic {
+            background: rgba(255, 170, 0, 0.15);
+            color: var(--cat-logic);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .issue-badge.ai {
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--cat-ai);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        /* Severity Indicator */
+        .severity-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .severity-bar {
+            width: 60px;
+            height: 4px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .severity-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        .severity-fill.critical { background: var(--severity-critical); }
+        .severity-fill.major { background: var(--severity-major); }
+        .severity-fill.moderate { background: var(--severity-moderate); }
+        .severity-fill.minor { background: var(--severity-minor); }
+
+        .severity-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* Stars */
+        .star-rating {
+            display: inline-flex;
+            gap: 2px;
+        }
+
+        .star {
+            font-size: 10px;
+            color: var(--border-mid);
+            transition: color 0.2s ease;
+        }
+
+        .star.filled {
+            color: var(--accent-amber);
+        }
+
+        /* Description */
+        .issue-description {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Suggestion */
+        .suggestion {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent-cyan);
+        }
+
+        /* Rewrite Options */
+        .rewrite-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .rewrite-option {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            padding: var(--space-sm);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-dim);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rewrite-option:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .option-tag {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            min-width: 20px;
+        }
+
+        .option-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        /* Major Comments Section */
+        .major-comments {
+            padding: var(--space-xl);
+        }
+
+        .comment-item {
+            padding: var(--space-lg);
+            background: var(--bg-elevated);
+            border-left: 3px solid var(--accent-rose);
+            margin-bottom: var(--space-md);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-sm);
+        }
+
+        .comment-category {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-rose);
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .tab-btn {
+            padding: var(--space-md) var(--space-lg);
+            background: transparent;
+            border: none;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            transition: width 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-cyan);
+        }
+
+        .tab-btn.active::after {
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Comparison View */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        .comparison-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+        }
+
+        .comparison-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-md) var(--space-lg);
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .comparison-title {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .comparison-content {
+            padding: var(--space-xl);
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Inline Edits */
+        del {
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--accent-rose);
+            text-decoration: line-through;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        ins {
+            background: rgba(0, 255, 159, 0.2);
+            color: var(--accent-emerald);
+            text-decoration: none;
+            padding: 2px 4px;
+            border-radius: 2px;
+            border-bottom: 1px solid var(--accent-emerald);
+        }
+
+        /* Annotation Sidebar */
+        .annotation-toggle {
+            position: fixed;
+            right: var(--space-lg);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .annotation-toggle:hover {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .annotation-sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-mid);
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .annotation-sidebar.show {
+            transform: translateX(0);
+        }
+
+        .annotation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .annotation-title {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .annotation-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s ease;
+        }
+
+        .annotation-close:hover {
+            color: var(--text-primary);
+        }
+
+        .annotation-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-md);
+        }
+
+        .annotation-item {
+            padding: var(--space-md);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-dim);
+            margin-bottom: var(--space-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .annotation-item:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        /* Export Buttons */
+        .export-bar {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: flex-end;
+            margin-bottom: var(--space-xl);
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-lg);
+            background: transparent;
+            border: 1px solid var(--border-mid);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: var(--space-xl);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: var(--space-md) var(--space-xl);
+            background: var(--accent-cyan);
+            color: var(--bg-deep);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 2px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-mid);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+
+            .annotation-sidebar {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-md);
+            }
+
+            .header-top {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .header-meta {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                margin-left: 0;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-input:focus {
+                width: 100%;
+            }
+
+            .review-table {
+                font-size: 12px;
+            }
+
+            .review-table th,
+            .review-table td {
+                padding: var(--space-sm);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            body::before,
+            .orb,
+            .filter-bar,
+            .export-bar,
+            .annotation-toggle,
+            .annotation-sidebar {
+                display: none;
+            }
+
+            .section {
+                background: white;
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <div>
+                    <div class="document-type">Academic Review Protocol v2.0</div>
+                    <h1>论文审阅报告</h1>
+                </div>
+                <div class="round-badge">
+                    <span>Round</span>
+                    <span class="number">01</span>
+                </div>
+            </div>
+            <div class="header-meta">
+                <div class="meta-item">
+                    <span>论文标题: 深度学习在自然语言处理中的应用研究</span>
+                </div>
+                <div class="meta-item">
+                    <span>审阅日期: 2024-01-15</span>
+                </div>
+                <div class="meta-item">
+                    <span>审稿人: AI Review System</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Dashboard -->
+        <div class="stats-dashboard">
+            <div class="stat-card">
+                <div class="stat-label">Total Issues</div>
+                <div class="stat-number">24</div>
+            </div>
+            <div class="stat-card format">
+                <div class="stat-label">Format</div>
+                <div class="stat-number">8</div>
+            </div>
+            <div class="stat-card expression">
+                <div class="stat-label">Expression</div>
+                <div class="stat-number">6</div>
+            </div>
+            <div class="stat-card logic">
+                <div class="stat-label">Logic</div>
+                <div class="stat-number">5</div>
+            </div>
+            <div class="stat-card ai">
+                <div class="stat-label">AI Patterns</div>
+                <div class="stat-number">3</div>
+            </div>
+            <div class="stat-card major">
+                <div class="stat-label">Major</div>
+                <div class="stat-number">2</div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-info">
+                <h2>Review Progress</h2>
+                <p>四轮审阅已完成</p>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+            <div class="progress-percent">100%</div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <span class="filter-label">Filter</span>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All <span class="count">24</span></button>
+                <button class="filter-btn" data-filter="format">Format <span class="count">8</span></button>
+                <button class="filter-btn" data-filter="expression">Expression <span class="count">6</span></button>
+                <button class="filter-btn" data-filter="logic">Logic <span class="count">5</span></button>
+                <button class="filter-btn" data-filter="ai">AI <span class="count">3</span></button>
+                <button class="filter-btn" data-filter="major">Major <span class="count">2</span></button>
+            </div>
+            <div class="search-container">
+                <span class="search-icon">⌘</span>
+                <input type="text" class="search-input" placeholder="搜索问题...">
+            </div>
+        </div>
+
+        <!-- Export Bar -->
+        <div class="export-bar">
+            <button class="export-btn" onclick="exportToWord()">
+                <span>↓</span> Export Word
+            </button>
+            <button class="export-btn" onclick="exportToPDF()">
+                <span>↓</span> Export PDF
+            </button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="summary">Issue Summary</button>
+            <button class="tab-btn" data-tab="comparison">Side-by-Side</button>
+        </div>
+
+        <!-- Tab: Summary -->
+        <div class="tab-content active" id="tab-summary">
+            <!-- Format Issues -->
+            <div class="section" data-category="format">
+                <div class="section-header">
+                    <span class="section-icon">📝</span>
+                    <h2 class="section-title">Round 1: Language & Format</h2>
+                    <span class="section-count">08</span>
+                </div>
+                <table class="review-table">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Severity</th>
+                            <th>Description</th>
+                            <th>Suggestion</th>
+                            <th>Rewrite Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="location-badge" onclick="copyText('本研究通过实验验证了假设')">
+                                    <span class="location-text">"本研究通过实验验证了假设"</span>
+                                    <span class="copy-icon">⧉</span>
+                                </div>
+                            </td>
+                            <td><span class="issue-badge format">助词误用</span></td>
+                            <td>
+                                <div class="severity-indicator">
+                                    <div class="star-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star">☆</span>
+                                        <span class="star">☆</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="issue-description">句末缺少标点符号，影响句子完整性。</p></td>
+                            <td><p class="suggestion">补充句末标点</p></td>
+                            <td>
+                                <div class="rewrite-container">
+                                    <div class="rewrite-option" onclick="copyText('本研究通过实验验证了假设。')">
+                                        <span class="option-tag">A</span>
+                                        <span class="option-text">本研究通过实验验证了假设。</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('本研究通过实验验证了研究假设。')">
+                                        <span class="option-tag">B</span>
+                                        <span class="option-text">本研究通过实验验证了研究假设。</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('本研究通过实验证实了假设。')">
+                                        <span class="option-tag">C</span>
+                                        <span class="option-text">本研究通过实验证实了假设。</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="location-badge" onclick="copyText('p=.000')">
+                                    <span class="location-text">"p=.000"</span>
+                                    <span class="copy-icon">⧉</span>
+                                </div>
+                            </td>
+                            <td><span class="issue-badge format">统计格式</span></td>
+                            <td>
+                                <div class="severity-indicator">
+                                    <div class="star-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="issue-description">p值不可能等于0，这是统计学错误。</p></td>
+                            <td><p class="suggestion">使用p&lt;.001表示极显著</p></td>
+                            <td>
+                                <div class="rewrite-container">
+                                    <div class="rewrite-option" onclick="copyText('p<.001')">
+                                        <span class="option-tag">A</span>
+                                        <span class="option-text">p&lt;.001</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('p < .001')">
+                                        <span class="option-tag">B</span>
+                                        <span class="option-text">p &lt; .001</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('p < 0.001')">
+                                        <span class="option-tag">C</span>
+                                        <span class="option-text">p &lt; 0.001</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="location-badge" onclick="copyText('得到了惊人的结果')">
+                                    <span class="location-text">"得到了惊人的结果"</span>
+                                    <span class="copy-icon">⧉</span>
+                                </div>
+                            </td>
+                            <td><span class="issue-badge ai">AI表述</span></td>
+                            <td>
+                                <div class="severity-indicator">
+                                    <div class="star-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star">☆</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="issue-description">"惊人"是AI常用的夸张词汇，学术写作应避免使用。</p></td>
+                            <td><p class="suggestion">使用更客观的学术表述</p></td>
+                            <td>
+                                <div class="rewrite-container">
+                                    <div class="rewrite-option" onclick="copyText('获得了显著的结果')">
+                                        <span class="option-tag">A</span>
+                                        <span class="option-text">获得了显著的结果</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('得到了有意义的结果')">
+                                        <span class="option-tag">B</span>
+                                        <span class="option-text">得到了有意义的结果</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('研究结果显示')">
+                                        <span class="option-tag">C</span>
+                                        <span class="option-text">研究结果显示</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Logic Issues -->
+            <div class="section" data-category="logic">
+                <div class="section-header">
+                    <span class="section-icon">🔗</span>
+                    <h2 class="section-title">Logical Flow Analysis</h2>
+                    <span class="section-count">05</span>
+                </div>
+                <table class="review-table">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Severity</th>
+                            <th>Description</th>
+                            <th>Suggestion</th>
+                            <th>Rewrite Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="location-badge" onclick="copyText('基于上述分析，进一步探讨该方法的适用性和局限性。')">
+                                    <span class="location-text">"基于上述分析，进一步探讨该方法的适用..."</span>
+                                    <span class="copy-icon">⧉</span>
+                                </div>
+                            </td>
+                            <td><span class="issue-badge logic">段落衔接</span></td>
+                            <td>
+                                <div class="severity-indicator">
+                                    <div class="star-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star">☆</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="issue-description">与前段缺乏过渡，话题转换突兀，影响阅读流畅性。</p></td>
+                            <td><p class="suggestion">添加过渡句连接两段内容</p></td>
+                            <td>
+                                <div class="rewrite-container">
+                                    <div class="rewrite-option" onclick="copyText('基于上述分析，进一步探讨...')">
+                                        <span class="option-tag">A</span>
+                                        <span class="option-text">基于上述分析，进一步探讨...</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('然而，在讨论这一问题时，还需要考虑...')">
+                                        <span class="option-tag">B</span>
+                                        <span class="option-text">然而，在讨论这一问题时，还需要考虑...</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('除了上述因素外，另一个值得关注的方面是...')">
+                                        <span class="option-tag">C</span>
+                                        <span class="option-text">除了上述因素外，另一个值得关注的方面是...</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="location-badge" onclick="copyText('因此该方法具有显著优势')">
+                                    <span class="location-text">"因此该方法具有显著优势"</span>
+                                    <span class="copy-icon">⧉</span>
+                                </div>
+                            </td>
+                            <td><span class="issue-badge logic">句间逻辑</span></td>
+                            <td>
+                                <div class="severity-indicator">
+                                    <div class="star-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="issue-description">因果关系不成立，前文没有支持性论据直接推导此结论。</p></td>
+                            <td><p class="suggestion">补充论证过程或调整结论表达</p></td>
+                            <td>
+                                <div class="rewrite-container">
+                                    <div class="rewrite-option" onclick="copyText('实验结果表明，该方法在X方面表现出一定优势。')">
+                                        <span class="option-tag">A</span>
+                                        <span class="option-text">实验结果表明，该方法在X方面表现出一定优势。</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('初步验证表明，该方法可能具有潜在优势，但仍需进一步研究。')">
+                                        <span class="option-tag">B</span>
+                                        <span class="option-text">初步验证表明，该方法可能具有潜在优势，但仍需进一步研究。</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('相较于传统方法，该方法在以下三个方面展现出改进：...')">
+                                        <span class="option-tag">C</span>
+                                        <span class="option-text">相较于传统方法，该方法在以下三个方面展现出改进：...</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- AI Detection -->
+            <div class="section" data-category="ai">
+                <div class="section-header">
+                    <span class="section-icon">🤖</span>
+                    <h2 class="section-title">AI Writing Patterns</h2>
+                    <span class="section-count">03</span>
+                </div>
+                <table class="review-table">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Pattern Type</th>
+                            <th>AI Score</th>
+                            <th>Description</th>
+                            <th>Suggestion</th>
+                            <th>Humanize Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="location-badge" onclick="copyText('综上所述，本研究具有重要意义')">
+                                    <span class="location-text">"综上所述，本研究具有重要意义"</span>
+                                    <span class="copy-icon">⧉</span>
+                                </div>
+                            </td>
+                            <td><span class="issue-badge ai">Significance Inflation</span></td>
+                            <td>
+                                <div class="severity-indicator">
+                                    <div class="star-rating">
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star filled">★</span>
+                                        <span class="star">☆</span>
+                                        <span class="star">☆</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><p class="issue-description">使用"重要意义"等空洞词汇是AI常见模式，缺乏具体说明。</p></td>
+                            <td><p class="suggestion">具体说明研究的贡献和价值</p></td>
+                            <td>
+                                <div class="rewrite-container">
+                                    <div class="rewrite-option" onclick="copyText('本研究提出了X方法，可将Y效率提升Z%。')">
+                                        <span class="option-tag">A</span>
+                                        <span class="option-text">本研究提出了X方法，可将Y效率提升Z%。</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('研究发现...（具体结论）')">
+                                        <span class="option-tag">B</span>
+                                        <span class="option-text">研究发现...（具体结论）</span>
+                                    </div>
+                                    <div class="rewrite-option" onclick="copyText('本研究为...领域提供了新的视角。')">
+                                        <span class="option-tag">C</span>
+                                        <span class="option-text">本研究为...领域提供了新的视角。</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Major Comments -->
+            <div class="section" data-category="major">
+                <div class="section-header">
+                    <span class="section-icon">⚠</span>
+                    <h2 class="section-title">Critical Review Comments</h2>
+                    <span class="section-count">02</span>
+                </div>
+                <div class="major-comments">
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-category">Research Contribution</span>
+                        </div>
+                        <p class="comment-text">本文在研究贡献的表述上存在明显不足。摘要部分未能清晰阐述研究的核心创新点，与现有研究的区别也不明确。建议在第一段明确说明：1）本研究的具体创新点是什么；2）与已有研究相比的差异化价值；3）研究的主要发现。当前表述过于宽泛，缺乏说服力。</p>
+                    </div>
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-category">Methodology</span>
+                        </div>
+                        <p class="comment-text">方法论部分缺乏充分的理论支撑。选择该特定深度学习模型的理由未作详细说明，且未与其他可能的方法进行对比分析。建议补充：1）模型选择的依据和文献支持；2）参数设置的合理性说明；3）与其他方法的对比实验设计。此外，样本量是否足够也需要进一步论证。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Comparison -->
+        <div class="tab-content" id="tab-comparison">
+            <div class="section">
+                <div class="section-header">
+                    <span class="section-icon">📋</span>
+                    <h2 class="section-title">Side-by-Side Comparison</h2>
+                </div>
+                <div class="comparison-container">
+                    <div class="comparison-panel">
+                        <div class="comparison-header">
+                            <span class="comparison-title">Original Text</span>
+                        </div>
+                        <div class="comparison-content">
+                            <p>本研究通过实验验证了假设<del>得到了惊人的结果</del>。实验数据表明<ins>研究结果显示</ins>，所提出的方法<del>具有显著优势</del><ins>在准确率上提升了15%</ins>。</p>
+
+                            <p>该方法<del>展示出</del><ins>表现出</ins>良好的性能。</p>
+
+                            <p><del>综上所述，本研究具有重要意义。</del></p>
+                        </div>
+                    </div>
+                    <div class="comparison-panel">
+                        <div class="comparison-header">
+                            <span class="comparison-title">Revised Text</span>
+                        </div>
+                        <div class="comparison-content">
+                            <p>本研究通过实验验证了假设。研究结果显示，所提出的方法在准确率上提升了15%。</p>
+
+                            <p>该方法表现出良好的性能，在召回率方面也有明显改善。</p>
+
+                            <p>本研究提出的X方法填补了Y领域的空白，为后续研究提供了新的思路。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Annotation Toggle -->
+    <button class="annotation-toggle" onclick="toggleAnnotations()" title="Toggle Annotations">
+        💬
+    </button>
+
+    <!-- Annotation Sidebar -->
+    <div class="annotation-sidebar" id="annotation-sidebar">
+        <div class="annotation-header">
+            <span class="annotation-title">Annotations</span>
+            <button class="annotation-close" onclick="toggleAnnotations()">×</button>
+        </div>
+        <div class="annotation-list">
+            <div class="annotation-item" onclick="scrollToAnnotation('ann-1')">
+                <div class="location-text" style="font-size: 11px; margin-bottom: 4px;">Line 23</div>
+                <p style="font-size: 12px; color: var(--text-secondary);">句末缺少标点</p>
+            </div>
+            <div class="annotation-item" onclick="scrollToAnnotation('ann-2')">
+                <div class="location-text" style="font-size: 11px; margin-bottom: 4px;">Line 45</div>
+                <p style="font-size: 12px; color: var(--text-secondary);">p值格式错误</p>
+            </div>
+            <div class="annotation-item" onclick="scrollToAnnotation('ann-3')">
+                <div class="location-text" style="font-size: 11px; margin-bottom: 4px;">Line 78</div>
+                <p style="font-size: 12px; color: var(--text-secondary);">AI表述模式</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Copied to clipboard</div>
+
+    <script>
+        // Copy text to clipboard
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('已复制到剪贴板');
+            }).catch(() => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('已复制到剪贴板');
+            });
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Toggle annotation sidebar
+        function toggleAnnotations() {
+            document.getElementById('annotation-sidebar').classList.toggle('show');
+        }
+
+        // Scroll to annotation
+        function scrollToAnnotation(id) {
+            // Implementation for scrolling to specific annotation
+            console.log('Scrolling to:', id);
+        }
+
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+                document.querySelectorAll('.section').forEach(section => {
+                    if (filter === 'all' || section.dataset.category === filter) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.review-table tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Export functions (placeholders)
+        function exportToWord() {
+            showToast('导出Word功能开发中...');
+        }
+
+        function exportToPDF() {
+            showToast('导出PDF功能开发中...');
+        }
+    </script>
+</body>
+</html>
