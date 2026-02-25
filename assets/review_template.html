@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文审阅报告</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            /* Top-Tier Academic Journal Palette */
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafbfc;
+            --bg-tertiary: #f5f6f7;
+            --border-light: #e8eaed;
+            --border-medium: #d0d3d9;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --text-tertiary: #8a8a8a;
+
+            /* Accent Colors - Subtle & Professional */
+            --accent-blue: #0052cc;
+            --accent-red: #c41e3a;
+            --accent-amber: #b57e00;
+            --accent-green: #2da44e;
+            --accent-purple: #8a4baf;
+
+            /* Severity Colors */
+            --severity-critical: #c41e3a;
+            --severity-major: #d45d00;
+            --severity-moderate: #b57e00;
+            --severity-minor: #656d76;
+            --severity-trivial: #8a8a8a;
+
+            /* Category Colors */
+            --cat-format: #0052cc;
+            --cat-expression: #8a4baf;
+            --cat-logic: #b57e00;
+            --cat-ai: #c41e3a;
+            --cat-major: #2da44e;
+
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /* Typography */
+            --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .document {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            box-shadow: 0 0 0 1px var(--border-light);
+        }
+
+        .content {
+            padding: var(--space-2xl) var(--space-xl);
+        }
+
+        /* ===== Header ===== */
+        .header {
+            border-bottom: 2px solid var(--text-primary);
+            padding-bottom: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .document-type {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--space-md);
+        }
+
+        .paper-title {
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: var(--space-lg);
+            padding-left: var(--space-md);
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .header-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-sm);
+        }
+
+        .meta-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .model-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent-blue);
+            background: rgba(0, 82, 204, 0.08);
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        .round-badge {
+            display: inline-block;
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--bg-primary);
+            background: var(--text-primary);
+            padding: 2px 10px;
+            border-radius: 2px;
+        }
+
+        /* ===== Summary Cards ===== */
+        .summary-section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+        }
+
+        .summary-card.total {
+            background: var(--bg-tertiary);
+            border-color: var(--border-medium);
+        }
+
+        .summary-number {
+            font-family: var(--font-sans);
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 1;
+            margin-bottom: var(--space-xs);
+        }
+
+        .summary-card.format .summary-number { color: var(--cat-format); }
+        .summary-card.expression .summary-number { color: var(--cat-expression); }
+        .summary-card.logic .summary-number { color: var(--cat-logic); }
+        .summary-card.ai .summary-number { color: var(--cat-ai); }
+        .summary-card.major .summary-number { color: var(--cat-major); }
+
+        .summary-label {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== Section ===== */
+        .section {
+            margin-bottom: var(--space-xl);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .section-number {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-right: var(--space-sm);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .section-count {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== Table ===== */
+        .review-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .review-table thead {
+            border-bottom: 2px solid var(--border-medium);
+        }
+
+        .review-table th {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            text-align: left;
+            padding: var(--space-sm) var(--space-sm) var(--space-sm) 0;
+            white-space: nowrap;
+        }
+
+        .review-table th:not(:first-child) {
+            padding-left: var(--space-md);
+        }
+
+        .review-table tbody tr {
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .review-table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .review-table td {
+            padding: var(--space-md) var(--space-sm) var(--space-md) 0;
+            vertical-align: top;
+        }
+
+        .review-table td:not(:first-child) {
+            padding-left: var(--space-md);
+        }
+
+        /* Location */
+        .location-text {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+
+        .location-text:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Issue Type Badge */
+        .issue-badge {
+            display: inline-block;
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
+        .issue-badge.format {
+            background: rgba(0, 82, 204, 0.1);
+            color: var(--cat-format);
+        }
+
+        .issue-badge.expression {
+            background: rgba(138, 75, 175, 0.1);
+            color: var(--cat-expression);
+        }
+
+        .issue-badge.logic {
+            background: rgba(181, 126, 0, 0.1);
+            color: var(--cat-logic);
+        }
+
+        .issue-badge.ai {
+            background: rgba(196, 30, 58, 0.1);
+            color: var(--cat-ai);
+        }
+
+        /* Severity */
+        .severity {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .severity-dots {
+            display: flex;
+            gap: 2px;
+        }
+
+        .severity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border-medium);
+        }
+
+        .severity-dot.filled {
+            background: var(--accent-amber);
+        }
+
+        .severity-dot.critical { background: var(--severity-critical); }
+        .severity-dot.major { background: var(--severity-major); }
+        .severity-dot.moderate { background: var(--severity-moderate); }
+
+        /* Description */
+        .issue-description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Suggestion */
+        .suggestion {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Rewrite Options */
+        .rewrite-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .rewrite-option {
+            padding: 10px 12px;
+            font-size: 13px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .rewrite-option:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-medium);
+        }
+
+        .rewrite-option-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .option-label {
+            font-family: var(--font-sans);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            background: rgba(0, 82, 204, 0.1);
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        .option-text {
+            color: var(--text-primary);
+            word-break: break-word;
+            hyphens: auto;
+        }
+
+        /* ===== Major Comments ===== */
+        .major-comments {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .comment-item {
+            padding: var(--space-md);
+            padding-left: var(--space-lg);
+            border-left: 3px solid var(--border-medium);
+            background: var(--bg-secondary);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
+        }
+
+        .comment-category {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-red);
+        }
+
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* ===== Filter Bar ===== */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: var(--space-xs);
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 12px;
+            background: transparent;
+            border: 1px solid var(--border-medium);
+            border-radius: 2px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+
+        .filter-btn.active {
+            background: var(--text-primary);
+            border-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        .search-box {
+            margin-left: auto;
+        }
+
+        .search-input {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            padding: 6px 12px;
+            border: 1px solid var(--border-medium);
+            border-radius: 2px;
+            width: 180px;
+            transition: width 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            width: 240px;
+        }
+
+        /* ===== Export Bar ===== */
+        .export-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+
+        .export-btn {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 6px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-medium);
+            border-radius: 2px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .export-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+
+        /* ===== Tabs ===== */
+        .tab-nav {
+            display: flex;
+            gap: var(--space-lg);
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: var(--space-lg);
+        }
+
+        .tab-btn {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            padding: var(--space-sm) 0;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--text-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== Comparison View ===== */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-lg);
+        }
+
+        .comparison-panel {
+            border: 1px solid var(--border-light);
+        }
+
+        .comparison-header {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .comparison-content {
+            padding: var(--space-md);
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        del {
+            background: rgba(196, 30, 58, 0.15);
+            color: var(--severity-critical);
+            text-decoration: line-through;
+            padding: 1px 2px;
+        }
+
+        ins {
+            background: rgba(45, 164, 78, 0.15);
+            color: var(--accent-green);
+            text-decoration: none;
+            padding: 1px 2px;
+            border-bottom: 1px solid var(--accent-green);
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: var(--space-lg);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            border-radius: 2px;
+            opacity: 0;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            margin-top: var(--space-2xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border-light);
+            font-family: var(--font-sans);
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-align: center;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 900px) {
+            .content {
+                padding: var(--space-lg) var(--space-md);
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .review-table {
+                font-size: 13px;
+            }
+
+            .review-table th,
+            .review-table td {
+                padding: var(--space-sm);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                margin-left: 0;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-input:focus {
+                width: 100%;
+            }
+        }
+
+        /* ===== Print ===== */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .document {
+                box-shadow: none;
+            }
+
+            .filter-bar,
+            .export-bar,
+            .tab-nav,
+            .toast {
+                display: none;
+            }
+
+            .tab-content {
+                display: block !important;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+
+            .review-table tbody tr:hover {
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="document">
+        <div class="content">
+            <!-- Header -->
+            <header class="header">
+                <div class="document-type">Peer Review Report</div>
+                <h1>论文审阅报告</h1>
+                <div class="paper-title">{{PAPER_TITLE}}</div>
+                <div class="header-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">审阅日期:</span>
+                        <span>{{REVIEW_DATE}}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">审阅轮次:</span>
+                        <span class="round-badge">Round {{ROUND_NUMBER}}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">审稿模型:</span>
+                        <span class="model-badge">{{MODEL_NAME}}</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Summary Cards -->
+            <section class="summary-section">
+                <div class="summary-grid">
+                    <div class="summary-card format">
+                        <div class="summary-number">8</div>
+                        <div class="summary-label">语言格式</div>
+                    </div>
+                    <div class="summary-card expression">
+                        <div class="summary-number">6</div>
+                        <div class="summary-label">表述问题</div>
+                    </div>
+                    <div class="summary-card logic">
+                        <div class="summary-number">5</div>
+                        <div class="summary-label">逻辑问题</div>
+                    </div>
+                    <div class="summary-card ai">
+                        <div class="summary-number">3</div>
+                        <div class="summary-label">AI嫌疑</div>
+                    </div>
+                    <div class="summary-card major">
+                        <div class="summary-number">2</div>
+                        <div class="summary-label">重大意见</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <span class="filter-label">筛选:</span>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="format">语言格式</button>
+                    <button class="filter-btn" data-filter="expression">表述问题</button>
+                    <button class="filter-btn" data-filter="logic">逻辑问题</button>
+                    <button class="filter-btn" data-filter="ai">AI嫌疑</button>
+                    <button class="filter-btn" data-filter="major">重大意见</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="搜索...">
+                </div>
+            </div>
+
+            <!-- Export Bar -->
+            <div class="export-bar">
+                <button class="export-btn" onclick="exportWord()">导出 Word</button>
+                <button class="export-btn" onclick="exportPDF()">导出 PDF</button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="summary">问题清单</button>
+                <button class="tab-btn" data-tab="comparison">对照修改</button>
+            </nav>
+
+            <!-- Tab: Summary -->
+            <div class="tab-content active" id="tab-summary">
+                <!-- Format Issues -->
+                <section class="section" data-category="format">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-number">1.</span>
+                            <span class="section-title">语言格式基础检查</span>
+                        </div>
+                        <span class="section-count">8 个问题</span>
+                    </div>
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th width="12%">位置</th>
+                                <th width="10%">类型</th>
+                                <th width="8%">严重度</th>
+                                <th width="22%">问题描述</th>
+                                <th width="14%">修改建议</th>
+                                <th width="34%">改写选项</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="location-text" onclick="copyText('本研究通过实验验证了假设')">"本研究通过实验验证了假设"</span></td>
+                                <td><span class="issue-badge format">助词误用</span></td>
+                                <td>
+                                    <div class="severity">
+                                        <div class="severity-dots">
+                                            <span class="severity-dot filled"></span>
+                                            <span class="severity-dot filled"></span>
+                                            <span class="severity-dot filled"></span>
+                                            <span class="severity-dot"></span>
+                                            <span class="severity-dot"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="issue-description">句末缺少标点符号，影响句子完整性。</p></td>
+                                <td><p class="suggestion">补充句末标点</p></td>
+                                <td>
+                                    <div class="rewrite-list">
+                                        <div class="rewrite-option" onclick="copyText('本研究通过实验验证了假设。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 A</span>
+                                            </div>
+                                            <div class="option-text">本研究通过实验验证了假设。</div>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('本研究通过实验验证了研究假设。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 B</span>
+                                            </div>
+                                            <div class="option-text">本研究通过实验验证了研究假设。</div>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('本研究通过实验证实了假设。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 C</span>
+                                            </div>
+                                            <div class="option-text">本研究通过实验证实了假设。</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="location-text" onclick="copyText('p=.000')">"p=.000"</span></td>
+                                <td><span class="issue-badge format">统计格式</span></td>
+                                <td>
+                                    <div class="severity">
+                                        <div class="severity-dots">
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="issue-description">p值不可能等于0，这是统计学错误。</p></td>
+                                <td><p class="suggestion">使用 p &lt; .001 表示极显著</p></td>
+                                <td>
+                                    <div class="rewrite-list">
+                                        <div class="rewrite-option" onclick="copyText('p<.001')">
+                                            <span class="option-label">A</span>
+                                            <span class="option-text">p&lt;.001</span>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('p < .001')">
+                                            <span class="option-label">B</span>
+                                            <span class="option-text">p &lt; .001</span>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('p < 0.001')">
+                                            <span class="option-label">C</span>
+                                            <span class="option-text">p &lt; 0.001</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="location-text" onclick="copyText('得到了惊人的结果')">"得到了惊人的结果"</span></td>
+                                <td><span class="issue-badge ai">AI表述</span></td>
+                                <td>
+                                    <div class="severity">
+                                        <div class="severity-dots">
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="issue-description">"惊人"是AI常用的夸张词汇，学术写作应避免。</p></td>
+                                <td><p class="suggestion">使用客观的学术表述</p></td>
+                                <td>
+                                    <div class="rewrite-list">
+                                        <div class="rewrite-option" onclick="copyText('获得了显著的结果')">
+                                            <span class="option-label">A</span>
+                                            <span class="option-text">获得了显著的结果</span>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('得到了有意义的结果')">
+                                            <span class="option-label">B</span>
+                                            <span class="option-text">得到了有意义的结果</span>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('研究结果显示')">
+                                            <span class="option-label">C</span>
+                                            <span class="option-text">研究结果显示</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Logic Issues -->
+                <section class="section" data-category="logic">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-number">2.</span>
+                            <span class="section-title">行文逻辑检查</span>
+                        </div>
+                        <span class="section-count">5 个问题</span>
+                    </div>
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th width="12%">位置</th>
+                                <th width="10%">类型</th>
+                                <th width="8%">严重度</th>
+                                <th width="22%">问题描述</th>
+                                <th width="14%">修改建议</th>
+                                <th width="34%">改写选项</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="location-text" onclick="copyText('基于上述分析，进一步探讨该方法的适用性和局限性。')">"基于上述分析，进一步探讨该方法的适用..."</span></td>
+                                <td><span class="issue-badge logic">段落衔接</span></td>
+                                <td>
+                                    <div class="severity">
+                                        <div class="severity-dots">
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot filled major"></span>
+                                            <span class="severity-dot"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="issue-description">段落开头缺乏与上文的连接，话题转换突兀。</p></td>
+                                <td><p class="suggestion">添加过渡句</p></td>
+                                <td>
+                                    <div class="rewrite-list">
+                                        <div class="rewrite-option" onclick="copyText('基于上述分析，进一步探讨该方法的适用性和局限性。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 A</span>
+                                            </div>
+                                            <div class="option-text">基于上述分析，进一步探讨该方法的适用性和局限性。</div>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('然而，在讨论这一问题时，还需要考虑不同场景下的表现差异。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 B</span>
+                                            </div>
+                                            <div class="option-text">然而，在讨论这一问题时，还需要考虑不同场景下的表现差异。</div>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('除了上述因素外，另一个值得关注的方面是该方法在实际应用中的可扩展性。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 C</span>
+                                            </div>
+                                            <div class="option-text">除了上述因素外，另一个值得关注的方面是该方法在实际应用中的可扩展性。</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="location-text" onclick="copyText('因此该方法具有显著优势')">"因此该方法具有显著优势"</span></td>
+                                <td><span class="issue-badge logic">句间逻辑</span></td>
+                                <td>
+                                    <div class="severity">
+                                        <div class="severity-dots">
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                            <span class="severity-dot filled critical"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="issue-description">因果关系不成立，缺乏支持性论据。</p></td>
+                                <td><p class="suggestion">补充论证或调整结论</p></td>
+                                <td>
+                                    <div class="rewrite-list">
+                                        <div class="rewrite-option" onclick="copyText('实验结果表明，该方法在准确率、召回率和F1分数三个指标上均表现出一定优势。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 A</span>
+                                            </div>
+                                            <div class="option-text">实验结果表明，该方法在准确率、召回率和F1分数三个指标上均表现出一定优势。</div>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('初步验证表明，该方法在特定条件下可能具有潜在优势，但仍需进一步研究以确认其普适性。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 B</span>
+                                            </div>
+                                            <div class="option-text">初步验证表明，该方法在特定条件下可能具有潜在优势，但仍需进一步研究以确认其普适性。</div>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('相较于传统方法，该方法在处理大规模数据时展现出以下三个方面的改进：计算效率提升约30%，内存占用减少25%，且在边缘设备上具有更好的实时性能。')">
+                                            <div class="rewrite-option-header">
+                                                <span class="option-label">选项 C</span>
+                                            </div>
+                                            <div class="option-text">相较于传统方法，该方法在处理大规模数据时展现出以下三个方面的改进：计算效率提升约30%，内存占用减少25%，且在边缘设备上具有更好的实时性能。</div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- AI Patterns -->
+                <section class="section" data-category="ai">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-number">3.</span>
+                            <span class="section-title">AI写作嫌疑检测</span>
+                        </div>
+                        <span class="section-count">3 个问题</span>
+                    </div>
+                    <table class="review-table">
+                        <thead>
+                            <tr>
+                                <th width="14%">位置</th>
+                                <th width="12%">类型</th>
+                                <th width="10%">可疑度</th>
+                                <th width="26%">AI特征描述</th>
+                                <th width="16%">修改建议</th>
+                                <th width="22%">人工化改写</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="location-text" onclick="copyText('综上所述，本研究具有重要意义')">"综上所述，本研究具有重要意义"</span></td>
+                                <td><span class="issue-badge ai">意义夸大</span></td>
+                                <td>
+                                    <div class="severity">
+                                        <div class="severity-dots">
+                                            <span class="severity-dot filled moderate"></span>
+                                            <span class="severity-dot filled moderate"></span>
+                                            <span class="severity-dot filled moderate"></span>
+                                            <span class="severity-dot"></span>
+                                            <span class="severity-dot"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><p class="issue-description">空洞的"重要意义"表述，缺乏具体价值说明。</p></td>
+                                <td><p class="suggestion">具体说明研究贡献</p></td>
+                                <td>
+                                    <div class="rewrite-list">
+                                        <div class="rewrite-option" onclick="copyText('本研究提出了X方法，可将Y效率提升Z%。')">
+                                            <span class="option-label">A</span>
+                                            <span class="option-text">本研究提出了X方法，可将Y效率提升Z%。</span>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('本研究为...领域提供了新的实证证据。')">
+                                            <span class="option-label">B</span>
+                                            <span class="option-text">本研究为...领域提供了新的实证证据。</span>
+                                        </div>
+                                        <div class="rewrite-option" onclick="copyText('研究发现...（具体结论）')">
+                                            <span class="option-label">C</span>
+                                            <span class="option-text">研究发现...（具体结论）</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Major Comments -->
+                <section class="section" data-category="major">
+                    <div class="section-header">
+                        <div>
+                            <span class="section-number">4.</span>
+                            <span class="section-title">重大审稿意见</span>
+                        </div>
+                        <span class="section-count">2 条意见</span>
+                    </div>
+                    <div class="major-comments">
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-category">研究贡献</span>
+                            </div>
+                            <p class="comment-text">本文在研究贡献的表述上存在明显不足。摘要部分未能清晰阐述研究的核心创新点，与现有研究的区别也不明确。建议在第一段明确说明：1）本研究的具体创新点是什么；2）与已有研究相比的差异化价值；3）研究的主要发现。当前表述过于宽泛，缺乏说服力。</p>
+                        </div>
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-category">方法论</span>
+                            </div>
+                            <p class="comment-text">方法论部分缺乏充分的理论支撑。选择该特定深度学习模型的理由未作详细说明，且未与其他可能的方法进行对比分析。建议补充：1）模型选择的依据和文献支持；2）参数设置的合理性说明；3）与其他方法的对比实验设计。</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab: Comparison -->
+            <div class="tab-content" id="tab-comparison">
+                <section class="section">
+                    <div class="section-header">
+                        <span class="section-title">全文对照修改</span>
+                    </div>
+                    <div class="comparison">
+                        <div class="comparison-panel">
+                            <div class="comparison-header">原文</div>
+                            <div class="comparison-content">本研究通过实验验证了假设<del>得到了惊人的结果</del>。实验数据表明，所提出的方法<del>具有显著优势</del>。
+
+该方法<del>展示出</del>良好的性能。
+
+<del>综上所述，本研究具有重要意义。</del></div>
+                        </div>
+                        <div class="comparison-panel">
+                            <div class="comparison-header">修改后</div>
+                            <div class="comparison-content">本研究通过实验验证了假设。研究结果显示，所提出的方法在准确率上提升了15%。
+
+该方法表现出良好的性能，在召回率方面也有明显改善。
+
+本研究提出的X方法填补了Y领域的空白，为后续研究提供了新的思路。</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Generated by Claude Opus Academic Review System</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">已复制到剪贴板</div>
+
+    <script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('已复制到剪贴板');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('已复制到剪贴板');
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Filter
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+                document.querySelectorAll('.section').forEach(section => {
+                    if (filter === 'all' || section.dataset.category === filter) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.review-table tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+
+        function exportWord() {
+            showToast('导出 Word 功能开发中...');
+        }
+
+        function exportPDF() {
+            showToast('导出 PDF 功能开发中...');
+        }
+    </script>
+</body>
+</html>
