@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学术论文审阅报告 - 示例</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #ecf0f1;
+            --border-color: #bdc3c7;
+            --text-color: #2c3e50;
+            --deleted-bg: #ffeef0;
+            --added-bg: #e8f5e9;
+            --comment-bg: #fff9c4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header .meta {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-bg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .count {
+            background: var(--secondary-color);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        /* Table */
+        .review-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .review-table th,
+        .review-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .review-table th {
+            background: var(--light-bg);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .review-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* Location */
+        .review-table .location {
+            color: var(--text-color);
+            font-weight: 500;
+            font-style: italic;
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            max-width: 180px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .review-table .location:hover {
+            background: #e8e8e8;
+        }
+
+        .review-table .location:active {
+            background: #ddd;
+        }
+
+        .location-copy-hint {
+            font-size: 10px;
+            color: #999;
+            margin-left: 4px;
+            opacity: 0.7;
+        }
+
+        /* Severity Stars */
+        .severity-stars {
+            display: inline-flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .severity-stars .star {
+            color: #ddd;
+            font-size: 14px;
+        }
+
+        .severity-stars .star.filled {
+            color: #f39c12;
+        }
+
+        .severity-level-5 { color: #c00; }
+        .severity-level-4 { color: #e67e00; }
+        .severity-level-3 { color: #f39c12; }
+        .severity-level-2 { color: #856404; }
+        .severity-level-1 { color: #6c757d; }
+
+        /* Issue Type */
+        .issue-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            background: var(--light-bg);
+            color: var(--primary-color);
+        }
+
+        /* Rewrite Examples */
+        .rewrite-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .rewrite-option {
+            background: #f8f9fa;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            border-left: 3px solid var(--secondary-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rewrite-option:hover {
+            background: #e9ecef;
+            border-left-color: var(--primary-color);
+        }
+
+        .rewrite-option .option-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 11px;
+            margin-right: 4px;
+        }
+
+        /* Copy toast */
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>学术论文审阅报告 - 格式预览</h1>
+            <div class="meta">
+                <span>本文档展示了优化后的审阅报告格式</span>
+            </div>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">总问题数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #e74c3c;">2</div>
+                <div class="stat-label">语言格式问题</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #f39c12;">2</div>
+                <div class="stat-label">表述问题</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #3498db;">3</div>
+                <div class="stat-label">行文逻辑问题</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #9b59b6;">1</div>
+                <div class="stat-label">AI写作嫌疑</div>
+            </div>
+        </div>
+
+        <!-- Round 1: Language & Format Issues -->
+        <div class="section">
+            <div class="section-title">
+                <span>📝</span>
+                <span>第一轮：语言格式基础检查</span>
+                <span class="count">3</span>
+            </div>
+            <table class="review-table">
+                <thead>
+                    <tr>
+                        <th width="10%">位置</th>
+                        <th width="12%">类型</th>
+                        <th width="10%">严重程度</th>
+                        <th width="25%">问题描述</th>
+                        <th width="18%">修改建议</th>
+                        <th width="25%">改写示例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="location" onclick="copyToClipboard('本研究通过实验验证了假设', this)">"本研究通过实验验证了假设"<span class="location-copy-hint">📋</span></span></td>
+                        <td><span class="issue-type">助词误用</span></td>
+                        <td><div class="severity-stars severity-level-3"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">☆</span><span class="star">☆</span></div></td>
+                        <td>句末语气词缺失</td>
+                        <td>补充完整的句式表达</td>
+                        <td>
+                            <div class="rewrite-examples">
+                                <div class="rewrite-option" onclick="copyToClipboard('本研究通过实验验证了假设。', this)"><span class="option-label">A:</span>本研究通过实验验证了假设。</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('本研究通过实验验证了研究假设。', this)"><span class="option-label">B:</span>本研究通过实验验证了研究假设。</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('本研究通过实验证实了假设。', this)"><span class="option-label">C:</span>本研究通过实验证实了假设。</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="location" onclick="copyToClipboard('p=.000', this)">"p=.000"<span class="location-copy-hint">📋</span></span></td>
+                        <td><span class="issue-type">统计格式</span></td>
+                        <td><div class="severity-stars severity-level-5"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div></td>
+                        <td>p值表示错误，p不可能等于0</td>
+                        <td>使用p&lt;.001表示极显著</td>
+                        <td>
+                            <div class="rewrite-examples">
+                                <div class="rewrite-option" onclick="copyToClipboard('p<.001', this)"><span class="option-label">A:</span>p&lt;.001</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('p < .001', this)"><span class="option-label">B:</span>p &lt; .001</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('p < 0.001', this)"><span class="option-label">C:</span>p &lt; 0.001</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="location" onclick="copyToClipboard('得到了惊人的结果', this)">"得到了惊人的结果"<span class="location-copy-hint">📋</span></span></td>
+                        <td><span class="issue-type">AI表述</span></td>
+                        <td><div class="severity-stars severity-level-4"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">☆</span></div></td>
+                        <td>"惊人"是AI常用的夸张词汇</td>
+                        <td>使用更客观的学术表述</td>
+                        <td>
+                            <div class="rewrite-examples">
+                                <div class="rewrite-option" onclick="copyToClipboard('获得了显著的结果', this)"><span class="option-label">A:</span>获得了显著的结果</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('得到了有意义的结果', this)"><span class="option-label">B:</span>得到了有意义的结果</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('研究结果显示', this)"><span class="option-label">C:</span>研究结果显示</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Round 2.5: Logical Flow Issues -->
+        <div class="section">
+            <div class="section-title">
+                <span>🔗</span>
+                <span>行文逻辑检查</span>
+                <span class="count">3</span>
+            </div>
+            <table class="review-table">
+                <thead>
+                    <tr>
+                        <th width="10%">位置</th>
+                        <th width="12%">类型</th>
+                        <th width="10%">严重程度</th>
+                        <th width="25%">问题描述</th>
+                        <th width="18%">修改建议</th>
+                        <th width="25%">改写示例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="location" onclick="copyToClipboard('基于上述分析，进一步探讨该方法的适用性和局限性。', this)">"基于上述分析，进一步探讨该方法的适用..."<span class="location-copy-hint">📋</span></span></td>
+                        <td><span class="issue-type">段落衔接</span></td>
+                        <td><div class="severity-stars severity-level-4"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">☆</span></div></td>
+                        <td>与前段缺乏过渡，话题转换突兀</td>
+                        <td>添加过渡句连接两段内容</td>
+                        <td>
+                            <div class="rewrite-examples">
+                                <div class="rewrite-option" onclick="copyToClipboard('基于上述分析，进一步探讨...', this)"><span class="option-label">A:</span>基于上述分析，进一步探讨...</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('然而，在讨论这一问题时，还需要考虑...', this)"><span class="option-label">B:</span>然而，在讨论这一问题时，还需要考虑...</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('除了上述因素外，另一个值得关注的方面是...', this)"><span class="option-label">C:</span>除了上述因素外，另一个值得关注的方面是...</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="location" onclick="copyToClipboard('因此该方法具有显著优势', this)">"因此该方法具有显著优势"<span class="location-copy-hint">📋</span></span></td>
+                        <td><span class="issue-type">句间逻辑</span></td>
+                        <td><div class="severity-stars severity-level-5"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span></div></td>
+                        <td>因果关系不成立，前文没有支持性论据</td>
+                        <td>补充论证过程或调整结论表达</td>
+                        <td>
+                            <div class="rewrite-examples">
+                                <div class="rewrite-option" onclick="copyToClipboard('实验结果表明，该方法在X方面表现出一定优势。', this)"><span class="option-label">A:</span>实验结果表明，该方法在X方面表现出一定优势。</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('初步验证表明，该方法可能具有潜在优势，但仍需进一步研究。', this)"><span class="option-label">B:</span>初步验证表明，该方法可能具有潜在优势，但仍需进一步研究。</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('相较于传统方法，该方法在以下三个方面展现出改进：...', this)"><span class="option-label">C:</span>相较于传统方法，该方法在以下三个方面展现出改进：...</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="location" onclick="copyToClipboard('2. 实验结果', this)">"2. 实验结果"<span class="location-copy-hint">📋</span></span></td>
+                        <td><span class="issue-type">标题对应</span></td>
+                        <td><div class="severity-stars severity-level-3"><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">☆</span><span class="star">☆</span></div></td>
+                        <td>小标题为"实验结果"但内容包含讨论</td>
+                        <td>调整标题或拆分内容</td>
+                        <td>
+                            <div class="rewrite-examples">
+                                <div class="rewrite-option" onclick="copyToClipboard('2. 实验结果与分析', this)"><span class="option-label">A:</span>2. 实验结果与分析</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('2. 实验结果', this)"><span class="option-label">B:</span>2. 实验结果（将讨论部分移至下一节）</div>
+                                <div class="rewrite-option" onclick="copyToClipboard('2. 实验发现', this)"><span class="option-label">C:</span>2. 实验发现</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 说明 -->
+        <div class="section">
+            <div class="section-title">
+                <span>💡</span>
+                <span>优化说明</span>
+            </div>
+            <ul style="padding-left: 20px; line-height: 2;">
+                <li><strong>位置列</strong>：点击可复制原文内容，不再跳转</li>
+                <li><strong>严重程度</strong>：使用5星评级系统（★★★★★ = 最严重，★☆☆☆☆ = 最轻微）</li>
+                <li><strong>修改建议</strong>：简短说明如何修改</li>
+                <li><strong>改写示例</strong>：提供3个具体可点击复制的改写选项</li>
+                <li><strong>行文逻辑检查</strong>：新增类别，检测段落衔接、句间逻辑、标题对应等问题
+                    <ul style="margin-top: 8px;">
+                        <li>段落衔接：段落间过渡生硬、缺乏连贯</li>
+                        <li>句间逻辑：句子间逻辑断裂、因果关系不明确</li>
+                        <li>标题对应：小标题与内容不匹配</li>
+                        <li>逻辑一致：前后矛盾、论证不一致</li>
+                        <li>逻辑跳跃：缺少中间论证步骤</li>
+                    </ul>
+                </li>
+                <li><strong>全文对照修改</strong>：审阅意见不在此处显示，只在侧边栏批注中呈现</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="copy-toast" id="copy-toast">已复制到剪贴板</div>
+
+    <script>
+        function copyToClipboard(text, element) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 1500);
+            }).catch(err => {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                const toast = document.getElementById('copy-toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
